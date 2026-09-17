@@ -1,26 +1,134 @@
+/* ----------------------------------------------------------------------------
+   Cognitix Space — globals.css
+   Reconstructed because the attached file did not come through.
+   If your original has different values for .glass-panel / .glass-panel-hover /
+   .text-gradient, keep yours and delete the matching blocks below.
+
+   Tailwind v4 (v0 default). For Tailwind v3, replace the @import line with:
+     @tailwind base;
+     @tailwind components;
+     @tailwind utilities;
+---------------------------------------------------------------------------- */
+
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--font-geist-sans), "Inter", ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", sans-serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --glass-tint: 255 255 255;
+  --glass-edge: 255 255 255;
+  --accent-cyan: 34 211 238; /* cyan-400/500 range */
+  --accent-violet: 167 139 250; /* violet-400 */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #09090b; /* zinc-950 */
+  color: #fafafa;
+  font-family: var(--font-sans);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* --- Glass ---------------------------------------------------------------- */
+
+.glass-panel {
+  background-image: linear-gradient(
+    to bottom,
+    rgb(var(--glass-tint) / 0.07),
+    rgb(var(--glass-tint) / 0.025)
+  );
+  background-color: rgb(9 9 11 / 0.55);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgb(var(--glass-edge) / 0.08);
+  box-shadow:
+    inset 0 1px 0 0 rgb(var(--glass-edge) / 0.06),
+    0 24px 60px -32px rgb(0 0 0 / 0.9);
+}
+
+.glass-panel-hover {
+  transition:
+    border-color 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 300ms ease;
+}
+
+.glass-panel-hover:hover {
+  border-color: rgb(var(--accent-cyan) / 0.35);
+  box-shadow:
+    inset 0 1px 0 0 rgb(var(--glass-edge) / 0.1),
+    0 0 0 1px rgb(var(--accent-cyan) / 0.08),
+    0 30px 70px -34px rgb(var(--accent-cyan) / 0.25),
+    0 24px 60px -32px rgb(0 0 0 / 0.9);
+}
+
+/* --- Type ----------------------------------------------------------------- */
+
+.text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    #fafafa 0%,
+    rgb(var(--accent-cyan)) 42%,
+    rgb(var(--accent-violet)) 88%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* --- Background veil (hero grid) ------------------------------------------ */
+
+.grid-veil {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 80% 55% at 50% 40%, #000 30%, transparent 78%);
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 55% at 50% 40%,
+    #000 30%,
+    transparent 78%
+  );
+}
+
+/* --- Chrome --------------------------------------------------------------- */
+
+::selection {
+  background: rgb(var(--accent-cyan) / 0.25);
+  color: #fff;
+}
+
+*:focus-visible {
+  outline: 2px solid rgb(var(--accent-cyan) / 0.7);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
