@@ -132,7 +132,7 @@ const SITE = {
       badge: "Mobile Apps",
     },
     {
-      name: "Nayla",
+      name: "Naila Nasywa Farah Dilla",
       role: "Lead Research & Academic Writing",
       image: "/placeholder.svg?height=800&width=600",
       badge: "Research",
