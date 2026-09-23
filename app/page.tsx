@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import {
   AnimatePresence,
   MotionConfig,
   motion,
-  useReducedMotion,
 } from "framer-motion";
 import {
   ArrowUpRight,
@@ -13,19 +13,18 @@ import {
   Check,
   CircuitBoard,
   Code2,
+  Copy,
   CornerDownLeft,
   Cpu,
+  Globe,
   Loader2,
   LogIn,
   MessageSquare,
   Send,
   Sparkles,
+  Terminal,
   X,
 } from "lucide-react";
-
-/* ============================================================================
-   CONTENT
-============================================================================ */
 
 const SITE = {
   brand: "Cognitix Space",
@@ -35,47 +34,64 @@ const SITE = {
     { label: "Tim", href: "#team" },
     { label: "Portal Klien", href: "#portal" },
   ],
+  techTicker: [
+    "Next.js",
+    "Supabase pgvector",
+    "ESP32-S3 Firmware",
+    "PyTorch Models",
+    "Tailwind CSS v4",
+    "MQTT Pipelines",
+    "Golang Microservices",
+    "Vercel Edge Network",
+    "FastAPI",
+  ],
   capabilities: [
     {
       icon: Cpu,
       title: "Implementasi AI",
       body: "Sistem retrieval, computer vision, dan model serving yang dibangun untuk menangani trafik skala produksi, bukan sekadar demo.",
+      tag: "PyTorch & Gemini API",
     },
     {
       icon: CircuitBoard,
       title: "Perangkat Terhubung (IoT)",
       body: "Firmware, pipeline telemetri, dan dashboard terpusat — dari prototipe ESP32 hingga klaster data server.",
+      tag: "FreeRTOS & MQTT",
     },
     {
       icon: Code2,
       title: "Platform Full-stack",
-      body: "Dikembangkan end-to-end, di-deploy di edge, diserahkan lengkap dengan runbook dan migrasi yang benar-benar Anda butuhkan.",
+      body: "Dikembangkan end-to-end, di-deploy di edge, diserahkan lengkap dengan runbook dan migrasi yang benar-benar lo butuhin.",
+      tag: "Next.js & Supabase",
     },
   ],
   projects: [
     {
       name: "PostuRa",
-      kicker: "Wearable IoT",
+      kicker: "Wearable IoT System",
       summary:
         "Perangkat wearable pengoreksi postur yang mengirimkan data gerak 9-axis ke aplikasi pelatih secara real-time.",
       stack: ["ESP32", "MQTT", "Next.js", "TimescaleDB"],
       image: "/placeholder.svg?height=720&width=1080",
+      metric: "Latency < 12ms",
     },
     {
       name: "Lentera",
-      kicker: "Platform AI",
+      kicker: "AI Knowledge Platform",
       summary:
         "Platform knowledge-base berbasis RAG untuk institusi keuangan regional, melayani 40 ribu query internal per bulan.",
       stack: ["Next.js", "Supabase", "pgvector", "LangGraph"],
       image: "/placeholder.svg?height=720&width=1080",
+      metric: "40k Req / Month",
     },
     {
       name: "SkinNET Bio",
-      kicker: "Visi Klinis",
+      kicker: "Clinical Vision AI",
       summary:
         "Model triase dermatologi dengan rekam jejak audit yang dapat dibaca klinisi, dikemas dalam antarmuka khusus tablet.",
       stack: ["PyTorch", "FastAPI", "ONNX", "React"],
       image: "/placeholder.svg?height=720&width=1080",
+      metric: "98.4% Precision",
     },
   ],
   team: [
@@ -83,31 +99,55 @@ const SITE = {
       name: "Muhammad Arya Putra Rhiswanto",
       role: "Founder & Principal Architect",
       image: "/placeholder.svg?height=800&width=600",
+      badge: "Full-Stack & AI",
     },
     {
-      name: "Nadia Ayu Pramesti",
+      name: "Siti Nur Haliza",
       role: "Head of Machine Learning",
       image: "/placeholder.svg?height=800&width=600",
+      badge: "Computer Vision",
     },
     {
-      name: "Reza Aditya Nugroho",
-      role: "Lead Embedded Engineer",
+      name: "Muhammad Fazel Rabbani",
+      role: "Lead IoT & Embedded Engineer",
       image: "/placeholder.svg?height=800&width=600",
+      badge: "IoT & Firmware",
     },
     {
-      name: "Clara Widjaja",
-      role: "Design Systems Lead",
+      name: "Syahrul Romadhon",
+      role: "Creative Media & Visual Design Lead",
       image: "/placeholder.svg?height=800&width=600",
+      badge: "UI/UX & Product",
+    },
+    {
+      name: "Dinar",
+      role: "Lead Web & Platform Engineering",
+      image: "/placeholder.svg?height=800&width=600",
+      badge: "Web & Platform",
+    },
+    {
+      name: "Wildan Silki Sawabiqil Abroor",
+      role: "Lead Mobile & App Engineering",
+      image: "/placeholder.svg?height=800&width=600",
+      badge: "Mobile Apps",
+    },
+    {
+      name: "Nayla",
+      role: "Lead Research & Academic Writing",
+      image: "/placeholder.svg?height=800&width=600",
+      badge: "Research",
+    },
+    {
+      name: "Abdullah Khoirul Anam",
+      role: "Lead Hardware Repair & Maintenance",
+      image: "/placeholder.svg?height=800&width=600",
+      badge: "Hardware",
     },
   ],
 };
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const SPRING = { type: "spring" as const, stiffness: 420, damping: 38, mass: 0.9 };
-
-/* ============================================================================
-   1 · DYNAMIC ISLAND NAVBAR
-============================================================================ */
 
 type IslandMode = "idle" | "expanded";
 
@@ -205,7 +245,7 @@ function DynamicIsland() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm font-medium tracking-tight text-zinc-100">
-                    Ceritakan apa yang sedang Anda bangun
+                    Ceritain apa yang lagi lo bangun, maybe lo butuhin?
                   </p>
                   <p className="mt-1 text-xs text-zinc-500">
                     Arsitek kami membaca setiap pesan. Biasanya dibalas dalam kurun waktu 24 jam.
@@ -257,72 +297,200 @@ function DynamicIsland() {
   );
 }
 
-/* ============================================================================
-   2 · HERO
-============================================================================ */
-
 function Hero() {
+  const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<"iot" | "ai" | "web">("iot");
+
+  const copyCmd = () => {
+    navigator.clipboard.writeText("npx cognitix@latest init");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <section
       id="top"
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-32 pb-24"
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-32 pb-20"
     >
-      {/* Subtle background - NO MORE NEON BLOBS */}
+      {/* Background Grids & Ambient Glow */}
       <div aria-hidden className="pointer-events-none absolute inset-0 flex items-center justify-center">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.03)_0%,transparent_70%)]" />
-        <div className="grid-veil absolute inset-0 opacity-50" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-175 h-112.5 bg-zinc-400/10 blur-[140px] rounded-full" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-size-[4rem_4rem] mask-[radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
       </div>
 
+      {/* Floating System Status Badge */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: EASE }}
+        className="mb-6 flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 backdrop-blur-md"
+      >
+        <span className="relative flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+        </span>
+        <span className="text-xs font-mono text-zinc-300">All Systems Nominal</span>
+        <span className="text-zinc-600">•</span>
+        <span className="text-xs font-mono text-zinc-500">Latency 14ms</span>
+      </motion.div>
+
+      {/* Main Hero Header */}
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, ease: EASE }}
-        className="relative z-10 flex max-w-3xl flex-col items-center text-center"
+        className="relative z-10 flex max-w-4xl flex-col items-center text-center"
       >
-        <span className="glass-panel mb-8 rounded-full px-3.5 py-1.5 text-xs text-zinc-400 border-white/10">
-          Studio Rekayasa Perangkat Lunak · Surabaya & Remote
-        </span>
-
-        <h1 className="text-balance text-4xl font-medium leading-[1.05] tracking-tighter text-zinc-100 sm:text-6xl md:text-7xl">
-          Arsitektur Ekosistem <br/>
-          <span className="text-zinc-400">AI, IoT, &amp; Web Skala Enterprise</span>
+        <h1 className="text-balance text-4xl font-semibold leading-[1.08] tracking-tighter text-zinc-100 sm:text-6xl md:text-7xl">
+          Eksplorasi AI, IoT, & Web <br />
+          <span className="bg-linear-to-r from-zinc-200 via-zinc-400 to-zinc-600 bg-clip-text text-transparent">
+            Tanpa AI Slop. Murni Rekayasa.
+          </span>
         </h1>
 
-        <p className="mt-7 max-w-xl text-pretty text-base leading-relaxed text-zinc-400 sm:text-lg">
-          Kami membawa sistem dari papan konsep hingga tahap produksi — model AI yang tahan terhadap beban tinggi, perangkat keras yang terhubung stabil, dan antarmuka yang benar-benar akan digunakan oleh tim Anda.
+        <p className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-zinc-400 sm:text-lg">
+          Dari prototipe hardware mahasiswa, platform riset kampus, sampai arsitektur sistem enterprise anti-lag.
+          Kami eksekusi proyek lo dari draf dasar sampai <span className="text-zinc-200 font-medium">production-ready</span>.
         </p>
 
-        <div className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+        {/* Action Buttons & CLI Pill */}
+        <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row">
           <a
             href="#work"
-            className="group flex items-center justify-center gap-2 rounded-lg bg-zinc-100 px-6 py-3 text-sm font-medium text-zinc-950 transition-colors hover:bg-white"
+            className="group flex items-center justify-center gap-2 rounded-full bg-zinc-100 px-7 py-3.5 text-sm font-semibold text-zinc-950 transition-all hover:bg-white hover:scale-105 active:scale-95"
           >
-            Lihat studi kasus
+            Liat Garapan Kita
             <ArrowUpRight
-              className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              strokeWidth={2}
+              className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"
+              strokeWidth={2.5}
             />
           </a>
-          <a
-            href="#portal"
-            className="glass-panel glass-panel-hover flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-medium text-zinc-200 border-white/10"
+
+          {/* Copyable CLI Badge */}
+          <button
+            onClick={copyCmd}
+            className="glass-panel flex items-center gap-3 rounded-full border border-white/10 bg-black/40 px-5 py-3.5 font-mono text-xs text-zinc-300 transition-all hover:border-white/20 active:scale-95"
           >
-            <LogIn className="h-4 w-4" strokeWidth={1.75} />
-            Masuk portal
-          </a>
+            <Terminal className="h-3.5 w-3.5 text-zinc-500" />
+            <span>npx cognitix@latest init</span>
+            {copied ? (
+              <Check className="h-3.5 w-3.5 text-emerald-400" />
+            ) : (
+              <Copy className="h-3.5 w-3.5 text-zinc-500 hover:text-zinc-300" />
+            )}
+          </button>
+        </div>
+      </motion.div>
+
+      {/* Interactive Architecture & Terminal Mockup */}
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, ease: EASE, delay: 0.2 }}
+        className="glass-panel mt-14 w-full max-w-3xl overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/90 shadow-2xl backdrop-blur-xl"
+      >
+        {/* Terminal Top Bar */}
+        <div className="flex items-center justify-between border-b border-white/10 bg-white/2 px-4 py-3">
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-zinc-800" />
+            <div className="h-3 w-3 rounded-full bg-zinc-800" />
+            <div className="h-3 w-3 rounded-full bg-zinc-800" />
+            <span className="ml-2 font-mono text-xs text-zinc-500">cognitix-space-telemetry.log</span>
+          </div>
+
+          {/* Tab Switcher */}
+          <div className="flex rounded-lg border border-white/10 bg-black/50 p-1">
+            <button
+              onClick={() => setActiveTab("iot")}
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition ${
+                activeTab === "iot" ? "bg-white/10 text-zinc-100" : "text-zinc-500 hover:text-zinc-300"
+              }`}
+            >
+              <CircuitBoard className="h-3 w-3" /> IoT Stream
+            </button>
+            <button
+              onClick={() => setActiveTab("ai")}
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition ${
+                activeTab === "ai" ? "bg-white/10 text-zinc-100" : "text-zinc-500 hover:text-zinc-300"
+              }`}
+            >
+              <Cpu className="h-3 w-3" /> RAG Pipeline
+            </button>
+            <button
+              onClick={() => setActiveTab("web")}
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition ${
+                activeTab === "web" ? "bg-white/10 text-zinc-100" : "text-zinc-500 hover:text-zinc-300"
+              }`}
+            >
+              <Globe className="h-3 w-3" /> Edge App
+            </button>
+          </div>
+        </div>
+
+        {/* Terminal Content Box */}
+        <div className="p-5 font-mono text-xs leading-relaxed">
+          {activeTab === "iot" && (
+            <div className="space-y-1.5 text-zinc-400">
+              <p className="text-zinc-600">{"// ESP32-S3 Multi-sensor Telemetry Loop"}</p>
+              <p><span className="text-emerald-400">[MQTT]</span> Connected to broker.cognitix.space:8883 (TLS 1.3)</p>
+              <p><span className="text-cyan-400">[SENSOR]</span> MPU6050 9-Axis Gyro Read: <span className="text-zinc-200">&#123; pitch: -1.24, roll: 0.08, yaw: 89.2 &#125;</span></p>
+              <p><span className="text-purple-400">[TIMESCALEDB]</span> Inserted batch 128 rows in 2.4ms</p>
+            </div>
+          )}
+          {activeTab === "ai" && (
+            <div className="space-y-1.5 text-zinc-400">
+              <p className="text-zinc-600">{"// Supabase pgvector + Gemini Embeddings Retrieval"}</p>
+              <p><span className="text-cyan-400">[EMBEDDING]</span> Text chunk embedded via Gemini API (768 dim)</p>
+              <p><span className="text-emerald-400">[COSINE]</span> Top match: doc_id #49102 (Similarity: 0.9412)</p>
+              <p><span className="text-purple-400">[STREAM]</span> Streaming answer tokens to client (Latency: 18ms)...</p>
+            </div>
+          )}
+          {activeTab === "web" && (
+            <div className="space-y-1.5 text-zinc-400">
+              <p className="text-zinc-600">{"// Next.js App Router Edge Deployment"}</p>
+              <p><span className="text-emerald-400">[BUILD]</span> Dynamic Route /portal rendered statically with ISR</p>
+              <p><span className="text-cyan-400">[AUTH]</span> Supabase RLS Policy verified user role: <span className="text-zinc-200">&apos;enterprise_client&apos;</span></p>
+              <p><span className="text-purple-400">[VERCEL]</span> Response served from CGK (Jakarta Edge) in 9ms</p>
+            </div>
+          )}
         </div>
       </motion.div>
     </section>
   );
 }
 
-/* ============================================================================
-   3 · CAPABILITIES  (#about)
-============================================================================ */
+function TechTicker() {
+  return (
+    <div className="relative w-full overflow-hidden border-y border-white/10 bg-black/40 py-4 backdrop-blur-sm">
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-linear-to-r from-zinc-950 to-transparent z-10" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-linear-to-l from-zinc-950 to-transparent z-10" />
+      
+      <motion.div
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        className="flex w-max items-center gap-8 whitespace-nowrap"
+      >
+        {[...SITE.techTicker, ...SITE.techTicker].map((tech, index) => (
+          <div key={index} className="flex items-center gap-3 text-xs font-mono tracking-wider text-zinc-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-zinc-600" />
+            <span>{tech}</span>
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
 
 function Capabilities() {
   return (
     <section id="about" className="relative mx-auto max-w-6xl px-6 py-24 md:py-32">
+      <div className="mb-12">
+        <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">Core Expertise</span>
+        <h2 className="mt-2 text-balance text-3xl font-medium tracking-tighter text-zinc-100 sm:text-4xl">
+          Arsitektur kuat, tanpa eksperimen bodong.
+        </h2>
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -333,13 +501,22 @@ function Capabilities() {
         {SITE.capabilities.map((cap, i) => (
           <div
             key={cap.title}
-            className={`p-8 md:p-10 ${i > 0 ? "border-t border-white/5 md:border-l md:border-t-0" : ""}`}
+            className={`p-8 md:p-10 flex flex-col justify-between ${
+              i > 0 ? "border-t border-white/5 md:border-l md:border-t-0" : ""
+            }`}
           >
-            <cap.icon className="h-5 w-5 text-zinc-200" strokeWidth={1.5} />
-            <h3 className="mt-5 text-lg font-medium tracking-tight text-zinc-100">
-              {cap.title}
-            </h3>
-            <p className="mt-2.5 text-sm leading-relaxed text-zinc-400">{cap.body}</p>
+            <div>
+              <div className="flex items-center justify-between">
+                <cap.icon className="h-5 w-5 text-zinc-200" strokeWidth={1.5} />
+                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 font-mono text-[10px] text-zinc-400">
+                  {cap.tag}
+                </span>
+              </div>
+              <h3 className="mt-6 text-lg font-medium tracking-tight text-zinc-100">
+                {cap.title}
+              </h3>
+              <p className="mt-2.5 text-sm leading-relaxed text-zinc-400">{cap.body}</p>
+            </div>
           </div>
         ))}
       </motion.div>
@@ -347,23 +524,22 @@ function Capabilities() {
   );
 }
 
-/* ============================================================================
-   4 · PORTFOLIO / CASE STUDIES
-============================================================================ */
-
 function Work() {
   return (
     <section id="work" className="relative mx-auto max-w-6xl px-6 py-24 md:py-32">
       <div className="mb-14 flex flex-col gap-4 md:mb-20 md:flex-row md:items-end md:justify-between">
-        <h2 className="max-w-md text-balance text-3xl font-medium tracking-tighter text-zinc-100 sm:text-4xl md:text-5xl">
-          Karya yang rilis dan bertahan di produksi
-        </h2>
+        <div>
+          <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">Selected Work</span>
+          <h2 className="mt-2 max-w-md text-balance text-3xl font-medium tracking-tighter text-zinc-100 sm:text-4xl md:text-5xl">
+            Karya yang rilis dan stabil di produksi
+          </h2>
+        </div>
         <p className="max-w-sm text-sm leading-relaxed text-zinc-400">
-          Tiga sistem saat ini berjalan stabil. Dokumentasi teknis terperinci, termasuk tantangan yang kami hadapi, tersedia dengan NDA.
+          Dokumentasi teknis terperinci, repositori code, serta arsitektur backend lengkap disiapkan transparan.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {SITE.projects.map((project, i) => (
           <motion.article
             key={project.name}
@@ -374,12 +550,18 @@ function Work() {
             className="glass-panel glass-panel-hover group flex flex-col overflow-hidden rounded-2xl border border-white/10"
           >
             <div className="relative aspect-16/10 overflow-hidden bg-zinc-900">
-              <img
+              <Image
                 src={project.image || "/placeholder.svg"}
                 alt={`Antarmuka ${project.name}`}
-                className="h-full w-full object-cover opacity-70 grayscale transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:opacity-100 group-hover:grayscale-0"
+                fill
+                className="object-cover opacity-70 grayscale transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:opacity-100 group-hover:grayscale-0"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-zinc-950/90 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/20 to-transparent" />
+              
+              {/* Floating Metric Badge */}
+              <div className="absolute top-3 right-3 rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] text-emerald-400 backdrop-blur-md">
+                {project.metric}
+              </div>
             </div>
 
             <div className="flex flex-1 flex-col p-6">
@@ -404,7 +586,7 @@ function Work() {
                 {project.stack.map((tech) => (
                   <span
                     key={tech}
-                    className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-zinc-400"
+                    className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1 font-mono text-[11px] text-zinc-400"
                   >
                     {tech}
                   </span>
@@ -417,10 +599,6 @@ function Work() {
     </section>
   );
 }
-
-/* ============================================================================
-   5 · TEAM  (3D scroll)
-============================================================================ */
 
 const teamContainer = {
   hidden: {},
@@ -442,11 +620,12 @@ function Team() {
   return (
     <section id="team" className="relative mx-auto max-w-6xl px-6 py-24 md:py-32">
       <div className="mb-14 max-w-lg md:mb-20">
-        <h2 className="text-balance text-3xl font-medium tracking-tighter text-zinc-100 sm:text-4xl md:text-5xl">
+        <span className="text-xs font-mono uppercase tracking-widest text-zinc-500">Core Engineers</span>
+        <h2 className="mt-2 text-balance text-3xl font-medium tracking-tighter text-zinc-100 sm:text-4xl md:text-5xl">
           Tim di balik layar
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-zinc-400">
-          Ramping secara sengaja. Engineer yang merancang sistem Anda di awal adalah engineer yang sama yang akan menulis kodenya.
+          Ramping secara sengaja. Engineer yang merancang sistem lo di awal adalah engineer yang sama yang akan menulis kodenya.
         </p>
       </div>
 
@@ -456,7 +635,7 @@ function Team() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         style={{ perspective: 1000 }}
-        className="no-scrollbar -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0"
+        className="no-scrollbar -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4 lg:mx-0 lg:grid lg:grid-cols-4 lg:gap-y-8 lg:overflow-visible lg:px-0"
       >
         {SITE.team.map((member) => (
           <motion.div
@@ -467,17 +646,24 @@ function Team() {
             transition={{ duration: 0.4, ease: EASE }}
             className="group relative h-96 w-72 shrink-0 snap-center overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 lg:w-full"
           >
-            <img
+            <Image
               src={member.image || "/placeholder.svg"}
               alt={member.name}
-              className="absolute inset-0 h-full w-full object-cover grayscale transition-all duration-700 ease-out group-hover:scale-[1.04] group-hover:grayscale-0"
+              fill
+              className="object-cover grayscale transition-all duration-700 ease-out group-hover:scale-[1.04] group-hover:grayscale-0"
             />
             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-zinc-950 via-zinc-950/80 to-transparent" />
-            <div className="glass-panel absolute inset-x-3 bottom-3 rounded-xl px-4 py-3.5 border-white/10">
-              <p className="text-sm font-medium leading-snug tracking-tight text-zinc-100">
-                {member.name}
-              </p>
+            
+            <div className="glass-panel absolute inset-x-3 bottom-3 rounded-xl px-4 py-3.5 border-white/10 backdrop-blur-md">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium leading-snug tracking-tight text-zinc-100">
+                  {member.name}
+                </p>
+              </div>
               <p className="mt-0.5 text-xs text-zinc-400">{member.role}</p>
+              <span className="mt-2 inline-block rounded-md bg-white/10 px-2 py-0.5 font-mono text-[10px] text-zinc-300">
+                {member.badge}
+              </span>
             </div>
           </motion.div>
         ))}
@@ -485,10 +671,6 @@ function Team() {
     </section>
   );
 }
-
-/* ============================================================================
-   6 · CLIENT PORTAL STRIP + FOOTER
-============================================================================ */
 
 function PortalAndFooter() {
   return (
@@ -504,7 +686,7 @@ function PortalAndFooter() {
           Sudah bekerjasama dengan kami?
         </h2>
         <p className="relative mx-auto mt-3 max-w-md text-sm leading-relaxed text-zinc-400">
-          Riwayat deployment, laporan insiden, dan invoice tagihan tersedia di portal klien Anda.
+          Riwayat deployment, laporan insiden, dan invoice tagihan tersedia di portal klien lo.
         </p>
         <div className="relative mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row">
           <a
@@ -539,17 +721,13 @@ function PortalAndFooter() {
             </a>
           ))}
         </nav>
-        <span className="text-xs text-zinc-600">
+        <span className="text-xs font-mono text-zinc-600">
           © {new Date().getFullYear()} Cognitix Space
         </span>
       </div>
     </footer>
   );
 }
-
-/* ============================================================================
-   7 · AI ASSISTANT WIDGET
-============================================================================ */
 
 type ChatMessage = { from: "ai" | "user"; text: string };
 
@@ -706,16 +884,13 @@ function AssistantWidget() {
   );
 }
 
-/* ============================================================================
-   PAGE
-============================================================================ */
-
 export default function Page() {
   return (
     <MotionConfig reducedMotion="user">
       <main className="relative min-h-screen bg-zinc-950 text-zinc-100 antialiased selection:bg-zinc-800">
         <DynamicIsland />
         <Hero />
+        <TechTicker />
         <Capabilities />
         <Work />
         <Team />
