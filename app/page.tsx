@@ -72,16 +72,16 @@ const SITE = {
       summary:
         "Perangkat wearable pengoreksi postur yang mengirimkan data gerak 9-axis ke aplikasi pelatih secara real-time.",
       stack: ["ESP32", "MQTT", "Next.js", "TimescaleDB"],
-      image: "/placeholder.svg?height=720&width=1080",
+      image: "/image/postura.png",
       metric: "Latency < 12ms",
     },
     {
       name: "Lentera",
       kicker: "AI Knowledge Platform",
       summary:
-        "Platform knowledge-base berbasis RAG untuk institusi keuangan regional, melayani 40 ribu query internal per bulan.",
+        "Inovasi AI untuk pemeliharaan bahasa daerah yang menggabungkan fitur Kamus Digital, e-learning, dan asisten interaktif guna menjaga identitas lokal Bawean.",
       stack: ["Next.js", "Supabase", "pgvector", "LangGraph"],
-      image: "/placeholder.svg?height=720&width=1080",
+      image: "/image/lentera.png",
       metric: "40k Req / Month",
     },
     {
@@ -90,7 +90,7 @@ const SITE = {
       summary:
         "Model triase dermatologi dengan rekam jejak audit yang dapat dibaca klinisi, dikemas dalam antarmuka khusus tablet.",
       stack: ["PyTorch", "FastAPI", "ONNX", "React"],
-      image: "/placeholder.svg?height=720&width=1080",
+      image: "/image/skinnet.png",
       metric: "98.4% Precision",
     },
   ],
@@ -98,14 +98,14 @@ const SITE = {
     {
       name: "Muhammad Arya Putra Rhiswanto",
       role: "Founder & Principal Architect",
-      image: "/placeholder.svg?height=800&width=600",
+      image: "/profile/arya.jpeg",
       badge: "Full-Stack & AI",
     },
     {
       name: "Siti Nur Haliza",
-      role: "Head of Machine Learning",
-      image: "/placeholder.svg?height=800&width=600",
-      badge: "Computer Vision",
+      role: "Admin & Operations Lead",
+      image: "/profile/liza.jpeg",
+      badge: "Operations",
     },
     {
       name: "Muhammad Fazel Rabbani",
@@ -116,13 +116,13 @@ const SITE = {
     {
       name: "Syahrul Romadhon",
       role: "Creative Media & Visual Design Lead",
-      image: "/placeholder.svg?height=800&width=600",
+      image: "/profile/syahrul.jpeg",
       badge: "UI/UX & Product",
     },
     {
       name: "Dinar Putra Mubarok",
       role: "Lead Web & Platform Engineering",
-      image: "/placeholder.svg?height=800&width=600",
+      image: "/profile/dinar.jpeg",
       badge: "Web & Platform",
     },
     {
@@ -134,7 +134,7 @@ const SITE = {
     {
       name: "Naila Nasywa Farah Dilla",
       role: "Lead Research & Academic Writing",
-      image: "/placeholder.svg?height=800&width=600",
+      image: "/profile/nayla.jpeg",
       badge: "Research",
     },
     {
@@ -551,7 +551,7 @@ function Work() {
           >
             <div className="relative aspect-16/10 overflow-hidden bg-zinc-900">
               <Image
-                src={project.image || "/placeholder.svg"}
+                src={project.image || "/image"}
                 alt={`Antarmuka ${project.name}`}
                 fill
                 className="object-cover opacity-70 grayscale transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:opacity-100 group-hover:grayscale-0"
