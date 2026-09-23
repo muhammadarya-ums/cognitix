@@ -120,7 +120,7 @@ const SITE = {
       badge: "UI/UX & Product",
     },
     {
-      name: "Dinar",
+      name: "Dinar Putra Mubarok",
       role: "Lead Web & Platform Engineering",
       image: "/placeholder.svg?height=800&width=600",
       badge: "Web & Platform",
