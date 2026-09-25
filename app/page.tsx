@@ -110,7 +110,7 @@ const SITE = {
     {
       name: "Muhammad Fazel Rabbani",
       role: "Lead IoT & Embedded Engineer",
-      image: "/placeholder.svg?height=800&width=600",
+      image: "/profile/fazel.jpeg",
       badge: "IoT & Firmware",
     },
     {
@@ -128,7 +128,7 @@ const SITE = {
     {
       name: "Wildan Silki Sawabiqil Abroor",
       role: "Lead Mobile & App Engineering",
-      image: "/placeholder.svg?height=800&width=600",
+      image: "/profile/silki.jpeg",
       badge: "Mobile Apps",
     },
     {
@@ -140,7 +140,7 @@ const SITE = {
     {
       name: "Abdullah Khoirul Anam",
       role: "Lead Hardware Repair & Maintenance",
-      image: "/placeholder.svg?height=800&width=600",
+      image: "/profile/anam.jpeg",
       badge: "Hardware",
     },
   ],
